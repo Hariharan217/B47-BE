@@ -1,22 +1,19 @@
 
-const express = require("express")
 
-const fs = require('fs/promises');
+let express = require('express');
 
+let cors = require('cors')
+let app = express();
 
+let database = require('./Routes/Rooms')
 
-let app = express()
+let users = require('./Routes/roomforuser')
 
-app.get('/', (req, res)=>{
-    
-    let content = Date().split(' ');
-    let time = content[4].split(':').join('-');
+app.use(express.json())
+app.use(cors());
 
-    res.status(200).send("hello");
-    fs.writeFile(`./${content[1]}-${content[2]}-${time}.txt`, content, { flag: 'w' }, (err) => {
-        if (err) { console.log(err) }
-    })
-    
-})
+app.use('/', database)
 
-app.listen(3000)
+app.use('/users', users)
+
+app.listen(3001);
