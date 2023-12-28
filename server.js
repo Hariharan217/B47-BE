@@ -1,22 +1,16 @@
-
-const express = require("express")
-
-const fs = require('fs/promises');
-
-
+let express = require('express')
+let studentdata = require('./Routes/StudentRoute')
+let teacherdata = require('./Routes/TeacherRoute')
 
 let app = express()
 
-app.get('/', (req, res)=>{
-    
-    let content = Date().split(' ');
-    let time = content[4].split(':').join('-');
+let cors = require('cors')
 
-    res.status(200).send("hello");
-    fs.writeFile(`./${content[1]}-${content[2]}-${time}.txt`, content, { flag: 'w' }, (err) => {
-        if (err) { console.log(err) }
-    })
-    
-})
+app.use(express.json())
+app.use(cors())
 
-app.listen(3000)
+app.use('/student', studentdata)
+app.use('/teacher', teacherdata)
+
+
+app.listen(2000)
