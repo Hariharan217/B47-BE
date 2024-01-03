@@ -13,4 +13,6 @@ router.delete('/:id', userobject.deleteroom)
 
 router.put('/:id', userobject.updaterooms)
 
+router.post('/login', userobject.signup)
+
 module.exports = router

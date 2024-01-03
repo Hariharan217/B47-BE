@@ -2,19 +2,38 @@
 const roomsapimodel = require('../Module/schema')
 const usersapimodel = require('../Module/userschema')
 const checkingdate = require('../Daysendpoint/daybooking')
+const jwt = require('jsonwebtoken')
 
 // console.log(checkingdate);
 
 
 let getallinformation = async (req, res) => {
     try {
-        let rooms = await roomsapimodel.find()
-        res.status(200).send(rooms)
+        let btoken = req.headers.authorization
+        console.log(btoken)
+    
+        if(btoken){
+        
+        let token = btoken.split(' ')
+       
+        let detoken = await jwt.verify(token[1], "APPLE")
+        //    console.log(detoken)
+        let checkingtoken = await usersapimodel.findOne({ userid: detoken.userid })
+        //    console.log(checkingtoken);
 
-    } catch (error) {
-        console.log("error")
+        if (checkingtoken) {
+            let rooms = await roomsapimodel.find()
+            res.status(200).send(rooms)
+        }
+        }else{
+            res.send("token unavailable")
+        }}
+
+    catch (error) {
+                console.log(error)
+            }
+    
     }
-}
 
 let createrooms = async (req, res) => {
     try {
@@ -76,7 +95,37 @@ let deleteroom = async (req, res) => {
     }
 }
 
+const signup = async (req, res) => {
+
+    try {
+
+
+        let user = req.body
+        let finding = await usersapimodel.findOne({ userid: user.username })
+
+
+        if (finding) {
+            if (finding.password == user.password) {
+
+                const token = await jwt.sign({ userid: finding.userid }, "APPLE")
+
+                res.status(200).send(token);
+            }
+            else (
+                console.log("incorrect password")
+            )
+        }
+
+    } catch (error) {
+
+        console.log(error)
+
+    }
 
 
 
-module.exports = { getallinformation, createrooms, updaterooms, deleteroom }
+}
+
+
+
+module.exports = { getallinformation, createrooms, updaterooms, deleteroom, signup }
