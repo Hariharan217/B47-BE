@@ -1,0 +1,66 @@
+
+
+Student
+{
+    _id :
+ User Id :
+ password :
+ class : [{_id, 
+  is present:, 
+  Task completion : 
+  Task mark :
+   Task comments :
+   Leave application :
+  } ]
+  webcode :
+  codecodak  :
+  
+ 
+}
+class
+
+{
+    _id :
+    Title :
+    Date :  27/05/2023 - Saturday - 10:00 AM : 12:30 PM
+    Contents:[]
+    Task : "https://docs.google.com/document/d/1QznT1zM4mI6dG0TODx5Xjs1GquMoSHO3xZ1USDnVM-w/edit?usp=sharing"
+    teacher : _id
+}
+
+Teacher 
+{
+    userid :
+    password :
+    class : [_id, _id]
+}
+
+
+ 
+Mock-interview
+Leave application
+
+syllabus : ""
+
+
+        createclass
+
+        "Title": "Javascript - Day -3 : JS array & objects",
+        "Date" : ""
+        "Contents": []
+
+        craetestudent
+
+            {"userid": "jana@gmail.com",
+            "password": 12345 ,
+            "class": [{
+            }]}
+
+         assingclasa
+
+        [{"classid" : "659ed6f395f930b0cb40f3ce",
+        "ispresent": "true",
+        "Taskcompletion": "true",
+        "Taskmark": "",
+        "Taskcomments": "",
+        "Leaveapplication": "true"}]
