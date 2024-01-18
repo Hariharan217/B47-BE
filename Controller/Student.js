@@ -28,14 +28,42 @@ const login = async (req, res) => {
 
 const createstudentdetail = async (req, res) => {
 
+    // console.log(req.body)
+
+    let {userid, password} = req.body
+    console.log(userid, password)
+
+    let classArray =[{classid : "659ed6f395f930b0cb40f3ce",
+    ispresent: false,
+    Taskcompletion: false,
+    Taskmark: "",
+    Taskcomments: "",
+    Leaveapplication: false},
+    {classid : "65a21b13d9d6dc5f6560203e",
+    ispresent: false,
+    Taskcompletion: false,
+    Taskmark: "",
+    Taskcomments: "",
+    Leaveapplication: false},
+    {classid : "65a22739a85506944f4625ec",
+    ispresent: false,
+    Taskcompletion: false,
+    Taskmark: "",
+    Taskcomments: "",
+    Leaveapplication: false}]
+
+    let classobject = {userid, password, class: classArray}
+
+
     try {
-        await StudentsapiModel.create(req.body)
+        await StudentsapiModel.create(classobject)
         res.status(200).send("students created successfuly")
 
     } catch (error) {
         console.log(error)
     }
 }
+
 
 const assignclass = async (req, res) => {
 
