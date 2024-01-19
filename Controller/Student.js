@@ -11,14 +11,19 @@ const login = async (req, res) => {
 
         let studentuser = req.body
 
+
         let finding = await StudentsapiModel.findOne({ userid: studentuser.userid })
 
         if (finding) {
             if (finding.password == studentuser.password) {
 
                 const token = await jwt.sign({ userid: finding.userid }, "APPLE")
-                res.send(token);
+                res.send({ token: token });
+            } else {
+                res.send("incorrect password")
             }
+        } else {
+            res.send("user doesn't exist")
         }
     }
     catch (error) {
@@ -30,34 +35,74 @@ const createstudentdetail = async (req, res) => {
 
     // console.log(req.body)
 
-    let {userid, password} = req.body
-    console.log(userid, password)
+    let { userid, password } = req.body
+    // console.log(userid, password)
 
-    let classArray =[{classid : "659ed6f395f930b0cb40f3ce",
-    ispresent: false,
-    Taskcompletion: false,
-    Taskmark: "",
-    Taskcomments: "",
-    Leaveapplication: false},
-    {classid : "65a21b13d9d6dc5f6560203e",
-    ispresent: false,
-    Taskcompletion: false,
-    Taskmark: "",
-    Taskcomments: "",
-    Leaveapplication: false},
-    {classid : "65a22739a85506944f4625ec",
-    ispresent: false,
-    Taskcompletion: false,
-    Taskmark: "",
-    Taskcomments: "",
-    Leaveapplication: false}]
+    let classArray = [{
+        classid: "65aa537516998018f5e7e2a4",
+        ispresent: false,
+        Taskcompletion: false,
+        Taskmark: "",
+        Taskcomments: "",
+        Leaveapplication: false
+    },
 
-    let classobject = {userid, password, class: classArray}
+    {
+        classid: "65aa53d116998018f5e7e2a6",
+        ispresent: false,
+        Taskcompletion: false,
+        Taskmark: "",
+        Taskcomments: "",
+        Leaveapplication: false
+    },
+
+    {
+        classid: "65aa540f16998018f5e7e2a8",
+        ispresent: false,
+        Taskcompletion: false,
+        Taskmark: "",
+        Taskcomments: "",
+        Leaveapplication: false
+    },
+    {
+        classid: "65aa545e16998018f5e7e2aa",
+        ispresent: false,
+        Taskcompletion: false,
+        Taskmark: "",
+        Taskcomments: "",
+        Leaveapplication: false
+    },
+    {
+        classid: "65aa54b516998018f5e7e2ac",
+        ispresent: false,
+        Taskcompletion: false,
+        Taskmark: "",
+        Taskcomments: "",
+        Leaveapplication: false
+    },
+    {
+        classid: "65aa552816998018f5e7e2ae",
+        ispresent: false,
+        Taskcompletion: false,
+        Taskmark: "",
+        Taskcomments: "",
+        Leaveapplication: false
+    }]
+
+    let classobject = { userid, password, class: classArray }
 
 
     try {
-        await StudentsapiModel.create(classobject)
-        res.status(200).send("students created successfuly")
+
+        let finding = await StudentsapiModel.findOne({ userid: userid })
+
+        if (finding) {
+            res.send("username already exist")
+        }
+        else {
+            await StudentsapiModel.create(classobject)
+            res.status(200).send("Registration successfuly")
+        }
 
     } catch (error) {
         console.log(error)

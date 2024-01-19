@@ -3,12 +3,13 @@ const jwt = require('jsonwebtoken')
 const StudentsapiModel = require('../Module/StudentSchema')
 
 let creatclass = async (req, res) => {
+  // console.log(req.body)
   try {
     await ClassapiModel.create(req.body)
     res.status(200).send("class created successfuly")
 
   } catch (error) {
-    res.send(error)
+    res.send({message : error})
   }
 }
 

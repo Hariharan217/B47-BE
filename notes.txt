@@ -43,20 +43,20 @@ Leave application
 syllabus : ""
 
 
-        createclass
+        "createclass"
 
         "Title": "Javascript - Day -3 : JS array & objects",
-        "Date" : ""
-        "Contents": []
+        "Contents": [],
+        "Task" :""
 
-        craetestudent
+        "craetestudent"
 
             {"userid": "jana@gmail.com",
             "password": 12345 ,
             "class": [{
             }]}
 
-         assingclasa
+         "assingclass"
 
         [{"classid" : "659ed6f395f930b0cb40f3ce",
         "ispresent": "true",
