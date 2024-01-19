@@ -9,7 +9,7 @@ let creatclass = async (req, res) => {
     res.status(200).send("class created successfuly")
 
   } catch (error) {
-    res.send({message : error})
+    res.send({ message: error })
   }
 }
 
@@ -55,8 +55,13 @@ const leaveapply = async (req, res) => {
           studentName.class[i].Leaveapplication = true
           studentName.save()
 
+          res.send("leave applied successfully")
+
         }
-        else { console.log("no") }
+        else {
+          //  console.log("no")
+      
+      }
 
       }
     }
@@ -70,22 +75,26 @@ const leaveapply = async (req, res) => {
 const tasksubmission = async (req, res) => {
   let token = await req.headers.authorization.split(' ')
 
+
   if (token[1]) {
     let { id } = req.body
-
+    // console.log(id)
     const detoken = await jwt.verify(token[1], "APPLE")
     let studentName = await StudentsapiModel.findOne({ userid: detoken.userid })
-    console.log(studentName)
+    // console.log(studentName)
     for (let i = 0; i < studentName.class.length; i++) {
 
-      if (id.id == studentName.class[i].classid) {
-        console.log('yes')
+      if (id == studentName.class[i].classid) {
+        // console.log('yes')
 
         studentName.class[i].Taskcompletion = true
         studentName.save()
+        res.send("Task submission successfully")
 
       }
-      else { console.log("no") }
+      else { 
+        // console.log("no") 
+      }
     }
   }
 

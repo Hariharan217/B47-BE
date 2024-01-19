@@ -169,7 +169,7 @@ const forgetpassword = async (req, res) => {
     student.resetToken = resettoken
     student.save()
 
-    console.log(resettoken)
+    // console.log(resettoken)
 
     let link = `http://localhost:5173/passwordreset/${resettoken}`
 
@@ -178,8 +178,8 @@ const forgetpassword = async (req, res) => {
     const transporter = nodemailer.createTransport({
         host: "smtp.gmail.com",
         auth: {
-            user: "hari@gmail.com",
-            pass: "12345",
+            user: "harikalai217@gmail.com",
+            pass: "kzfcsgdxvqbbmpco",
         },
     });
 
@@ -191,10 +191,32 @@ const forgetpassword = async (req, res) => {
         html: link, // html body
     });
 
-    console.log(info)
+    // console.log(info)
+    res.send("password reset link send your mail please check it")
+}
+
+const passwordchange = async (req, res)=>{
+
+    let {token, newpassword} = req.body
+
+    try {
+
+        let finding = await StudentsapiModel.findOne({resetToken: token})
+        // console.log(finding.resetToken)
+
+        finding.password = newpassword
+        finding.save()
+        res.send("password reset successfully")
+        
+    } catch (error) {
+
+        console.log(error)
+        
+    }
+
 }
 
 
 
 
-module.exports = { login, createstudentdetail, assignclass, studentClassdetail, codecadak, forgetpassword }
+module.exports = { login, createstudentdetail, assignclass, studentClassdetail, codecadak, forgetpassword , passwordchange}

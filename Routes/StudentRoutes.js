@@ -15,6 +15,8 @@ router.get('/codecadak', studentObject.codecadak)
 
 router.post('/forgetpassword', studentObject.forgetpassword)
 
+router.put('/passwordchange', studentObject.passwordchange)
+
 
 
 
