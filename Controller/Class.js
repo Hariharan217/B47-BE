@@ -55,11 +55,9 @@ const leaveapply = async (req, res) => {
           studentName.class[i].Leaveapplication = true
           studentName.save()
 
-          res.send("leave applied successfully")
-
         }
         else {
-          //  console.log("no")
+           console.log("no")
       
       }
 
