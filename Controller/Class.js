@@ -54,12 +54,12 @@ const leaveapply = async (req, res) => {
 
           studentName.class[i].Leaveapplication = true
           studentName.save()
-
+          res.send("leave applied successfully")
         }
         else {
-           console.log("no")
-      
-      }
+          // console.log("no")
+
+        }
 
       }
     }
@@ -90,7 +90,7 @@ const tasksubmission = async (req, res) => {
         res.send("Task submission successfully")
 
       }
-      else { 
+      else {
         // console.log("no") 
       }
     }

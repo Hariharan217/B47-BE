@@ -4,6 +4,10 @@ let StudentsapiModel = require('../Module/StudentSchema')
 const nodemailer = require("nodemailer");
 var randomstring = require("randomstring");
 const jwt = require('jsonwebtoken')
+const dotenv = require("dotenv")
+
+dotenv.config()
+
 
 const login = async (req, res) => {
 
@@ -160,7 +164,7 @@ let codecadak = async (req, res) => {
 const forgetpassword = async (req, res) => {
 
     let student = await StudentsapiModel.findOne({ userid: req.body.email })
-    console.log(student)
+    // console.log(student) 
     let resettoken = randomstring.generate({
         length: 12,
         charset: 'alphabetic'
@@ -171,15 +175,15 @@ const forgetpassword = async (req, res) => {
 
     // console.log(resettoken)
 
-    let link = `http://localhost:5173/passwordreset/${resettoken}`
+    let link = `https://incandescent-lily-fc351d.netlify.app/passwordreset/${resettoken}`
 
 
     ////////////////////////////////////////////////////////mail code
     const transporter = nodemailer.createTransport({
         host: "smtp.gmail.com",
         auth: {
-            user: "harikalai217@gmail.com",
-            pass: "kzfcsgdxvqbbmpco",
+            user: process.env.MAILID,
+            pass: process.env.MAILPASSWORD,
         },
     });
 
