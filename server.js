@@ -1,16 +1,18 @@
-const express = require('express');
-const userRouter = require('./Routes/UserRoutes')
-const urlRouter = require('./Routes/UrlRoutes')
-const cors = require('cors')
 
-const app = express();
 
+let express = require('express');
+let cors =require('cors')
+let app = express();
 app.use(express.json())
 app.use(cors())
 
 
-app.use('/users', userRouter)
-app.use('/url', urlRouter)
+let userRoute = require('./Routes/Passwordroute')
 
 
-app.listen(3001)
+
+app.use('/user', userRoute)
+
+
+
+app.listen(5001);

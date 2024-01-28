@@ -1,144 +1,130 @@
-const User = require('../Module/Userschema');
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
-const randomstring = require('randomstring');
-const sendMail = require('./emailcontroller');
-const { trusted } = require('mongoose');
-const dotenv = require('dotenv')
+
+
+let ResetPasswordsapiModel = require('../Module/Userschema')
+const nodemailer = require("nodemailer");
+var randomstring = require("randomstring");
+const jwt = require('jsonwebtoken')
+const dotenv = require("dotenv")
 
 dotenv.config()
 
-const SECRET_KEY = 'APPLE';
+const createstudentdetail = async (req, res) => {
 
-const userController = {
+    console.log(req.body)
 
-    //Signup and generate activation link with token
-    signup: async (req, res) => {
-        console.log(req.body)
-        try {
-            
-            const { name, email, password } = req.body;
-            
-            //check if the user already exists
-            const existingUser = await User.findOne({ email });
+    let { userid, password } = req.body
+    // console.log(userid, password)
 
-            if (existingUser) {
-                return res.status(409).json({ message: 'User already exists' });
+   
+    try {
+
+        let finding = await ResetPasswordsapiModel.findOne({ userid: userid })
+
+        if (finding) {
+            res.send("username already exist")
+        }
+        else {
+            await ResetPasswordsapiModel.create(req.body)
+            res.status(200).send("Registration successfuly")
+        }
+
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+
+
+const login = async (req, res) => {
+
+    try {
+
+        let studentuser = req.body
+
+
+        let finding = await ResetPasswordsapiModel.findOne({ userid: studentuser.userid })
+
+        if (finding) {
+            if (finding.password == studentuser.password) {
+
+                const token = await jwt.sign({ userid: finding.userid }, "APPLE")
+                res.send({ token: token });
+            } else {
+                res.send("incorrect password")
             }
-
-            //create randomstring for account activation                  
-            let token = randomstring.generate({
-                length: 16,
-                charset: "alphanumeric",
-            });
-
-            //creating expiry after 1 hour
-            let expiry = new Date(Date.now() + 3600 * 1000);
-
-            //hash the password before savingg
-            const hashedPassword = await bcrypt.hash(password, 10);
-
-            //create new USer
-
-            const newUser = new User({
-                name,
-                email,
-                password: hashedPassword,
-                resetExpiry: expiry,
-                resetToken: token,
-            });
-
-            //save the user
-            await newUser.save();
-
-            //Send Email along with link to activate the account
-
-            let link = `${process.env.FE_URL}/activation_page/${token}`;
-
-            console.log(link)
-
-            await sendMail(email, "URL Shortener - Account Activation", `Hello !!, You have register to create a account on URL Shortener application.
-
-                Please click the following link to activate your account: ${link}`);
-            res.status(200).send({
-                message: `Activation link sent to mail ${email} and link is ${link}`,
-            });
-
-            // res.status(201).json({message:"Email has been sent to the Mail ID for account activation"})
-
+        } else {
+            res.send("user doesn't exist")
         }
-        catch (error) {
-            console.error('Error sending link to Email', error)
-            // res.status(500).json({message:'Activation Error'})
-        }
-    },
+    }
+    catch (error) {
+        res.send(error)
+    }
+}
 
-    //Signin process and generate JWT Token
-    signin: async (req, res) => {
-        try {
-            const { email, password } = req.body;
-            
-            //find the user by email
-            const user = await User.findOne({ email });
 
-            if (!user) {
-                return res.status(401).json({ message: 'User not found' });
-            }
-            //compare passwords
 
-            const passwordMatch = await bcrypt.compare(password, user.password);
+const forgetpassword = async (req, res) => {
 
-            if (!passwordMatch) {
-                return res.status(401).json({ message: 'Password wrong' });
-            }
+    let student = await ResetPasswordsapiModel.findOne({ userid: req.body.email })
+    // console.log(student) 
+    let resettoken = randomstring.generate({
+        length: 12,
+        charset: 'alphabetic'
+    });
 
-            //generate and send the jwt token 
+    student.resetToken = resettoken
+    student.save()
 
-            const token = jwt.sign({ userId: user._id }, SECRET_KEY, { expiresIn: '1h' });
-            res.json({ token });
-        }
-        catch (error) {
-            console.log('Error signing in user', error);
-            res.status(500).json({ message: 'Internal Server error' });
-        }
-    },
+    // console.log(resettoken)
 
-    //To verify the account activation link token
-    accountVerify: async (req, res) => {
-        try {
-            const { token } = req.body;
+    let link = `${process.env.FE_URL}/passwordreset/${resettoken}`
 
-            let userDB = await User.findOne({ resetToken: token });
 
-            //checking token is present in db is the token sent by the user or not
-            const isTokenValid = userDB.resetToken === token;
+    ////////////////////////////////////////////////////////mail code
+    const transporter = nodemailer.createTransport({
+        host: "smtp.gmail.com",
+        auth: {
+            user: process.env.EMAIL,
+            pass: process.env.PASSWORD,
+        },
+    });
 
-            //checking if the time limit to change the password has the expired
-            const isntExpired = userDB.resetExpiry > Date.now();
+    const info = await transporter.sendMail({
+        from: "hari", // sender address
+        to: req.body.email, // list of receivers
+        subject: "password reset link", // Subject line
+        text: "Hello world?", // plain text body
+        html: link, // html body
+    });
 
-            if (isTokenValid && isntExpired) {
+    // console.log(info)
+    res.send("password reset link send your mail please check it")
+}
 
-                //deleting the token and expiry time update the activated status to true
-                const updateActiveStatus = await User.findOneAndUpdate(
-                    { resetToken: token },
-                    {
-                        activated: true,
-                        resetToken: undefined,
-                        resetExpiry: undefined,
-                    },
-                    { new: true }
-                );
+const passwordchange = async (req, res)=>{
 
-                res.status(200).send({ success: "Activation updated successfully" });
-            }
-            else res.status(400).send({ Error: "Invalid Link or Expired !!!" });
+    console.log(req.body)
 
-        }
-        catch (error) {
-            console.log("Activation failed in backend", error);
-        }
-    },
+    let {token, newpassword} = req.body
+
+    try {
+
+        let finding = await ResetPasswordsapiModel.findOne({resetToken: token})
+        console.log(finding.resetToken)
+
+        finding.password = newpassword
+        finding.save()
+        res.send("password reset successfully")
+        
+    } catch (error) {
+
+        console.log(error)
+        
+    }
 
 }
 
-module.exports = userController;
+
+
+
+module.exports = { login, forgetpassword , passwordchange, createstudentdetail}
