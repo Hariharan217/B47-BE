@@ -20,8 +20,8 @@ app.post('/', async (req, res)=>{
             port: 465,
             secure: true,
             auth: {
-                user: "harikalai217@gmail.com",
-                pass: "phmovtswvtpxbbef"
+                user: process.env.EMAIL,
+                pass: process.env.PASSWORD,
             },
         });
     
