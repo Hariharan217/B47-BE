@@ -27,7 +27,7 @@ app.post('/', async (req, res)=>{
     
         var mailOptions = {
             from: mail,
-            to:"harikalai217@gmail.com" ,
+            to: process.env.EMAIL,
             subject: `${mailsubject} - from RESUME`,
             text: `
             Name : ${name},
