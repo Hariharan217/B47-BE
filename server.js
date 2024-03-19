@@ -2,6 +2,8 @@
 let express = require('express')
 const nodemailer = require("nodemailer")
 let cors =require('cors')
+const dotenv = require("dotenv")
+dotenv.config()
 
 let app = express();
 
@@ -13,6 +15,7 @@ app.use(cors())
 app.post('/', async (req, res)=>{
 
     let {name,mail,mobile,mailsubject,message} = req.body
+
        
         const transporter = nodemailer.createTransport({
             service: 'gmail',
@@ -26,7 +29,7 @@ app.post('/', async (req, res)=>{
         });
     
         var mailOptions = {
-            from: mail,
+            from: process.env.EMAIL,
             to: process.env.EMAIL,
             subject: `${mailsubject} - from RESUME`,
             text: `
@@ -37,9 +40,11 @@ app.post('/', async (req, res)=>{
     
         transporter.sendMail(mailOptions, (error) => {
             if (error) {
-                res.send('Error: ', error)
+                console.log(error)
+                res.send(error)
             }
             else {
+                console.log("email send")
                 res.status(200).send("Email sent") ;
             };
         });
